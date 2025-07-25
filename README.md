@@ -1,16 +1,14 @@
 # project-planner
 
-This template should help get you started developing with Vue 3 in Vite.
-
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
 ## Project Setup
+
+Uses [Gantt](https://github.com/Icecube50/project-planner-gantt) to render the chart. The modified version of that library is linked locally so you have to get & build from the linked repo.
+
+1. Clone [Gantt](https://github.com/Icecube50/project-planner-gantt) & build.
+2. `cd` gantt_project_planning/dist
+3. Run `npm link` to make npm aware of the local package.
+4. `cd` project-planner
+5. Run `npm link frappe-gantt`
 
 ```sh
 npm install
