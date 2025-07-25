@@ -1,5 +1,5 @@
 <script setup>
-import Gantt from 'frappe-gantt'
+import Gantt from 'gantt-planner'
 import { onMounted, ref } from 'vue'
 
 const chartContainer = ref(null)
@@ -22,8 +22,17 @@ const renderChart = () => {
     })
 }
 
+const setTasks = (t) => {tasks = t}
+
 onMounted(() => {
-    renderChart()
+    fetch('http://localhost:8080/api/tasks')
+        .then(response => response.json())
+        .then(data => {
+            setTasks(data)
+            renderChart()
+        });
+
+    //renderChart()
 
     const observer = new ResizeObserver(renderChart)
     observer.observe(chartContainer.value)
