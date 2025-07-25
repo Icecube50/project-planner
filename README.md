@@ -2,9 +2,9 @@
 
 ## Project Setup
 
-Uses [Gantt](https://github.com/Icecube50/gantt_project_planning) to render the chart. The modified version of that library is linked locally so you have to get & build from the linked repo.
+Uses [Gantt](https://github.com/Icecube50/project-planner-gantt) to render the chart. The modified version of that library is linked locally so you have to get & build from the linked repo.
 
-1. Clone [Gantt](https://github.com/Icecube50/gantt_project_planning) & build.
+1. Clone [Gantt](https://github.com/Icecube50/project-planner-gantt) & build.
 2. `cd` gantt_project_planning/dist
 3. Run `npm link` to make npm aware of the local package.
 4. `cd` project-planner
