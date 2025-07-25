@@ -1,6 +1,7 @@
 <script setup>
 import Gantt from 'gantt-planner'
 import { onMounted, ref } from 'vue'
+import New_project_form from './new_project_form.vue'
 
 const chartContainer = ref(null)
 const sidebarContainer = ref(null)
@@ -22,14 +23,16 @@ const renderChart = () => {
     })
 }
 
-const setTasks = (t) => {tasks = t}
+const update = (t) => {
+    tasks = t
+    renderChart()
+}
 
 onMounted(() => {
     fetch('http://localhost:8080/api/tasks')
         .then(response => response.json())
         .then(data => {
-            setTasks(data)
-            renderChart()
+            update(data)
         });
 
     //renderChart()
@@ -45,7 +48,7 @@ onMounted(() => {
 
         <div class="left-column">
             <div class="sidebar" ref="sidebarContainer">
-
+                <New_project_form @created_project="update"></New_project_form>
             </div>
         </div>
 
