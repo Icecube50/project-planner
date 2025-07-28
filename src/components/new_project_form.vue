@@ -1,5 +1,6 @@
 <script setup>
     import { ref } from 'vue'
+    import axios from 'axios'
 
     const project_form = ref(false)
     const project_name = ref(null)
@@ -21,31 +22,23 @@
         let end = new Date(project_end_date.value)
         if(start > end)
             return
-    
-        let request_data = {
+
+        loading.value = true
+
+        axios.post('http://localhost:8080/api/tasks',{
             name: project_name.value,
             start: toDateString(start),
             end: toDateString(end),
             id: project_name.value.replace(' ', '_')
-        }
-
-        console.log(JSON.stringify(request_data))
-        let request = new Request('http://localhost:8080/api/tasks', {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(request_data)
         })
-
-        loading.value = true
-
-        fetch(request)
             .then(response => response.json())
-            .then(data => {
-                emit('created_project', {data})
+            .then(responseData => {
+                emit('created_project', {responseData})
                 loading.value = false
-            });
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
     function required(value) {

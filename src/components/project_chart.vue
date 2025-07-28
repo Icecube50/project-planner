@@ -2,6 +2,7 @@
 import Gantt from 'gantt-planner'
 import { onMounted, ref } from 'vue'
 import New_project_form from './new_project_form.vue'
+import axios from 'axios'
 
 const chartContainer = ref(null)
 const sidebarContainer = ref(null)
@@ -29,12 +30,19 @@ const update = (t) => {
 }
 
 onMounted(() => {
-    fetch('http://localhost:8080/api/tasks')
-        .then(response => response.json())
-        .then(data => {
-            update(data)
-        });
-
+    axios.get('http://localhost:8080/api/tasks')
+        .then(response => {
+            if(response.status === 200){
+                update(response.data)
+            }
+            else{
+                console.log(`${response.status}: ${response.statusText}`)
+            }
+        })
+        .catch(error => {
+            console.log(error)
+        })
+     
     //renderChart()
 
     const observer = new ResizeObserver(renderChart)
