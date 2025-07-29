@@ -11,6 +11,7 @@ const chartContainer = ref(null)
 const sidebarContainer = ref(null)
 const create_dialog = ref(false)
 const dialog_type = ref(null)
+const dialog_payload = ref(null)
 
 let chartInstance = null
 
@@ -38,6 +39,7 @@ function renderChart(tasks) {
                 bar.add_action(`<button>Add Task</button>`, () => { 
                     if(!create_dialog.value){
                         dialog_type.value = 'create_task'
+                        dialog_payload.value = task.id
                         create_dialog.value = true
                     }
                  })
@@ -189,10 +191,6 @@ function renderChart(tasks) {
     })
 }
 
-function onCreatedProject() {
-    renderChart(store.cache)
-}
-
 onMounted(() => {
     // axios.get('http://localhost:8080/api/tasks')
     //     .then(response => {
@@ -218,6 +216,17 @@ onMounted(() => {
     observer.observe(chartContainer.value)
 })
 
+function onCreateTaskExit(task){
+    create_dialog.value = false
+    if(!task || !dialog_payload.value) return
+
+    if(store.db.CreateTaskInProject(dialog_payload.value, task)){
+        store.cache = store.db.GetChartData()
+        renderChart(store.cache)
+    }
+}
+
+
 </script>
 
 <template>
@@ -241,7 +250,7 @@ onMounted(() => {
     <v-dialog 
         width="600"
         v-model="create_dialog">
-        <Create_Task v-if="dialog_type === 'create_task'"></Create_Task>
+        <Create_Task v-if="dialog_type === 'create_task'" @exit="onCreateTaskExit"></Create_Task>
     </v-dialog>
 </template>
 

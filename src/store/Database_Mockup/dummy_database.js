@@ -111,6 +111,32 @@ export default class DummyDb {
     GetDefinedRoles(){
         return [...new Set(employee_table.map(it => it.employee_role))]
     }
+
+    CreateTaskInProject(projectId, taskData){
+        let prj = project_table.find(it => it.project_id === projectId)
+        if (prj === undefined) return false
+
+        let taskCount = task_table.filter(it => it.project_id === prj.project_id).length + 1
+
+        let entry = {
+            task_id: `${prj.project_id}_${taskCount}`,
+            project_id: prj.project_id,
+            task_name: taskData.task_name,
+            task_description: taskData.task_description,
+            task_type: taskData.task_type,
+            task_start_date: taskData.task_start_date,
+            task_start_as_text: toDateString(taskData.task_start_date),
+            task_end_date: taskData.task_end_date,
+            task_end_as_text: toDateString(taskData.task_end_date),
+            task_hours_estimated: taskData.task_hours_estimated,
+            task_hours_is: 0,
+            version: 1,
+        }
+
+        console.log(entry)
+        task_table.push(entry)
+        return true
+    }
 }
 
 
