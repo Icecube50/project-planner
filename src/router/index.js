@@ -1,4 +1,4 @@
-import Project_chart from '@/components/project_chart.vue'
+import Project_chart from '@/components/Project_Chart.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
