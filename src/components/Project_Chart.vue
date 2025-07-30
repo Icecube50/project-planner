@@ -39,7 +39,7 @@ function renderChart(tasks) {
             let task = bar.task
 
             if (task.type === 1) {
-                bar.add_action(`<button>Add Task</button>`, () => { 
+                bar.add_action(`<button style="color: black;">Add Task</button>`, () => { 
                     if(!create_dialog.value){
                         dialog_type.value = 'create_task'
                         dialog_payload.value = task.id
@@ -101,7 +101,7 @@ function renderChart(tasks) {
             }
 
             if (task.type === 2) {
-                bar.add_action(`<button>Assign Employee</button>`, () => { 
+                bar.add_action(`<button style="color: black;">Assign Employee</button>`, () => { 
                     if(!create_dialog.value){
                         dialog_type.value = 'create_assignment'
                         dialog_payload.value = task.id

@@ -120,7 +120,7 @@ async function onSave(submitEventPromise) {
     let assignment = {
         assignment_employee_id: assigned_employee.value,
         assignment_start_date: assignment_start.value,
-        assignment_end_date: assignment_end,
+        assignment_end_date: assignment_end.value,
         assignment_hours_per_day: assignment_hours_per_day.value,
     }
 

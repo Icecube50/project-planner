@@ -58,7 +58,7 @@ export default class DummyDb {
                 let employee = employee_table.find(it => it.employee_id === assignment.employee_id)
 
                 chart_data.push({
-                    id: `${task.task_id}_${employee.employee_id}`,
+                    id: employee.employee_id,
                     name: employee.employee_name,
                     role: employee.employee_role,
                     start: assignment.assignment_start_date,

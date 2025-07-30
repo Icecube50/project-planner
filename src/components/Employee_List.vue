@@ -67,11 +67,13 @@ function onCreateEmployeeExit(employee){
 .table_title {
     margin-left: 10px;
     margin-bottom: 10px;
+    color: black;
 }
 
 .create_button{
     margin-left: 10px;
     margin-bottom: 10px;
+    color: black;
 }
 
 </style>
