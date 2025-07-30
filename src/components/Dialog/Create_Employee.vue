@@ -17,7 +17,7 @@
                 </v-row>
                 <v-row dense>
                     <v-col>
-                        <v-autocomplete :items="roles" label="Roles*" required :rules="requiredRules" auto-select-first v-model="employee_role">
+                        <v-autocomplete :items="roles" label="Roles*" required :rules="validRoleRules" auto-select-first v-model="employee_role">
                         </v-autocomplete>
                     </v-col>
                 </v-row>
@@ -37,11 +37,12 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
+import { store } from '@/store/store';
 
 const emit = defineEmits(['exit'])
 
-const roles = ref([])
+const roles = reactive([])
 
 const employee_name = ref(null)
 const employee_surname = ref(null)
@@ -49,7 +50,7 @@ const employee_id = ref(null)
 const employee_role = ref(null)
 
 onMounted(() => {
-
+    Object.assign(roles, store.db.GetAvailableEmployeeRoles())
 })
 
 const requiredRules = [
@@ -63,6 +64,22 @@ const requiredRules = [
     }
 ]
 
+const validRoleRules = [
+        value => {
+        if (value && value?.length > 0) return true
+        return 'field is required'
+    },
+    value => {
+        if (/^\s*$/.test(value)) return 'field cannot be empty'
+        return true
+    },
+    value => {
+        console.log(roles.values)
+        if(roles.includes(value)) return true
+        return 'invalid role'
+    }
+]
+
 function onAbort() {
     emit('exit', null)
 }
@@ -73,7 +90,7 @@ async function onSave(submitEventPromise) {
 
     let employee = {
         employee_name: `${employee_name.value} ${employee_surname.value}`,
-        employee_id: employee_id.value.toUpper(),
+        employee_id: employee_id.value.toUpperCase(),
         employee_role: employee_role.value,
     }
 

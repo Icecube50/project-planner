@@ -9,7 +9,7 @@
                     </v-col>
                     <v-col>
                         <v-autocomplete :items="task_types" label="Task type*" v-model="task_type"
-                            :rules="requiredRules" auto-select-first>
+                            :rules="validTaskTypeRules" auto-select-first>
                         </v-autocomplete>
                     </v-col>
                 </v-row>
@@ -55,11 +55,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
+import { store } from '@/store/store';
 
 const emit = defineEmits(['exit'])
 
-const task_types = ref(['PL', 'KOS'])
+const task_types = reactive([])
 const start_date_dialog = ref(false)
 const end_date_dialog = ref(false)
 
@@ -70,6 +71,10 @@ const task_start = ref(null)
 const task_end = ref(null)
 const task_hours = ref(null)
 
+onMounted(() => {
+    Object.assign(task_types, store.db.GetAvailableTaskTypes())
+})
+
 const requiredRules = [
     value => {
         if (value && value?.length > 0) return true
@@ -78,6 +83,21 @@ const requiredRules = [
     value => {
         if (/^\s*$/.test(value)) return 'field cannot be empty'
         return true
+    }
+]
+
+const validTaskTypeRules = [
+    value => {
+        if (value && value?.length > 0) return true
+        return 'field is required'
+    },
+    value => {
+        if (/^\s*$/.test(value)) return 'field cannot be empty'
+        return true
+    },
+    value => {
+        if(task_types.includes(value)) return true
+        return 'invalid task type'
     }
 ]
 

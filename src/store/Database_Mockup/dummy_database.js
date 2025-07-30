@@ -175,6 +175,22 @@ export default class DummyDb {
         project_table.push(entry)
         return true
     }
+
+    GetAvailableEmployeeRoles(){
+        return [
+            'Developer',
+            'Project Lead',
+            'Tester',
+        ]
+    }
+
+    GetAvailableTaskTypes(){
+        return [
+            'Development',
+            'QA',
+            'Org'
+        ]
+    }
 }
 
 
