@@ -6,6 +6,7 @@ import { store } from '@/store/store'
 import { toDateString, TicksPerDay } from '@/store/Database_Mockup/util/today'
 import Project_SideBar from './Project_SideBar.vue'
 import Create_Task from './Dialog/Create_Task.vue'
+import Create_Assignment from './Dialog/Create_Assignment.vue'
 
 const chartContainer = ref(null)
 const sidebarContainer = ref(null)
@@ -16,6 +17,8 @@ const dialog_payload = ref(null)
 let chartInstance = null
 
 function renderChart(tasks) {
+    if(!tasks) return
+
     const height = sidebarContainer.value?.offsetHeight || 400
 
     if (chartContainer || tasks === undefined) {
@@ -98,9 +101,10 @@ function renderChart(tasks) {
             }
 
             if (task.type === 2) {
-                bar.add_action(`<button>Add Task</button>`, () => { 
+                bar.add_action(`<button>Assign Employee</button>`, () => { 
                     if(!create_dialog.value){
                         dialog_type.value = 'create_assignment'
+                        dialog_payload.value = task.id
                         create_dialog.value = true
                     }
                  })
@@ -205,15 +209,16 @@ onMounted(() => {
     //         console.log(error)
     //     })
 
-    if (store.cache === null)
-        store.cache = store.db.GetChartData()
-
-    renderChart(store.cache)
+    store.notifyMe(() => {
+        renderChart(store.getCache())
+    })
 
     const observer = new ResizeObserver(() => {
-        renderChart(store.cache)
+        renderChart(store.getCache())
     })
     observer.observe(chartContainer.value)
+
+    store.updateCache()
 })
 
 function onCreateTaskExit(task){
@@ -221,8 +226,16 @@ function onCreateTaskExit(task){
     if(!task || !dialog_payload.value) return
 
     if(store.db.CreateTaskInProject(dialog_payload.value, task)){
-        store.cache = store.db.GetChartData()
-        renderChart(store.cache)
+        store.updateCache()
+    }
+}
+
+function onCreateAssignmentExit(assignment){
+    create_dialog.value = false
+    if(!assignment || !dialog_payload.value) return
+
+    if(store.db.AssignEmployeeToTask(dialog_payload.value, assignment)){
+        store.updateCache()
     }
 }
 
@@ -251,6 +264,7 @@ function onCreateTaskExit(task){
         width="600"
         v-model="create_dialog">
         <Create_Task v-if="dialog_type === 'create_task'" @exit="onCreateTaskExit"></Create_Task>
+        <Create_Assignment v-if="dialog_type === 'create_assignment'" @exit="onCreateAssignmentExit"></Create_Assignment>
     </v-dialog>
 </template>
 

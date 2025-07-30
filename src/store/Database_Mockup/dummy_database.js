@@ -58,7 +58,7 @@ export default class DummyDb {
                 let employee = employee_table.find(it => it.employee_id === assignment.employee_id)
 
                 chart_data.push({
-                    id: employee.employee_id,
+                    id: `${task.task_id}_${employee.employee_id}`,
                     name: employee.employee_name,
                     role: employee.employee_role,
                     start: assignment.assignment_start_date,
@@ -103,7 +103,6 @@ export default class DummyDb {
         if(employee_table.find(it => it.employee_id === employee.employee_id) !== undefined)
             return false
 
-        console.log("adding")
         employee_table.push(employee)
         return true
     }
@@ -133,8 +132,47 @@ export default class DummyDb {
             version: 1,
         }
 
-        console.log(entry)
         task_table.push(entry)
+        return true
+    }
+
+    AssignEmployeeToTask(taskId, assignment){
+        let task = task_table.find(it => it.task_id === taskId)
+        if (task === undefined) return false
+
+        if(assignment_table.find(it => it.task_id === task.task_id && it.employee_id === assignment.assignment_employee_id) !== undefined)
+            return false
+
+        let entry =  {
+            task_id: task.task_id,
+            employee_id: assignment.assignment_employee_id,
+            assignment_start_date: assignment.assignment_start_date,
+            assignment_end_date: assignment.assignment_end_date,
+            assignment_hours_per_day: assignment.assignment_hours_per_day,
+            version: 1,
+        }   
+
+        assignment_table.push(entry)
+        return true
+    }
+
+    CreateProject(projectData){
+        if (project_table.find(it => it.project_id === projectData.project_id)) return false
+
+        let entry = {
+            project_id: projectData.project_id,
+            project_name: projectData.project_name,
+            project_description: projectData.project_description,
+            project_start_date: projectData.project_start_date,
+            project_start_as_text: toDateString(projectData.project_start_date),
+            project_end_date: projectData.project_end_date,
+            project_end_as_text: toDateString(projectData.project_end_date),
+            project_hours_estimated: projectData.project_hours_estimated,
+            project_hours_is: 0,
+            version: 1,
+        }
+
+        project_table.push(entry)
         return true
     }
 }
