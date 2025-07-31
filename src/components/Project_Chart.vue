@@ -1,5 +1,5 @@
 <script setup>
-import Gantt from 'gantt-planner'
+import GanttChart from 'gantt-planner'
 import { computed, onMounted, ref, watch } from 'vue'
 import axios from 'axios'
 import { store } from '@/store/store'
@@ -30,7 +30,7 @@ function renderChart(tasks) {
         }
     }
 
-    chartInstance = new Gantt(chartContainer.value, tasks, {
+    chartInstance = new GanttChart(chartContainer.value, tasks, {
         view_mode: 'Day',
         date_format: 'DD-MM-YYYY',
         scroll_to: 'today',

@@ -3,9 +3,11 @@
 </template>
 
 <script setup>
-import { onMounted, reactive } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
+import { store } from '@/store/store';
 import Gantt from '../utility_components/Gantt.vue';
 import axios from 'axios';
+import { ChartItem, ChartItemType } from 'gantt-planner';
 
 const chartData = ref([])
 
@@ -19,8 +21,18 @@ async function LoadChartData() {
 
         const result = []
         for (let prj of response.data){
-            prj.type = 'PROJECT'
-            result.push(prj)
+            
+            result.push(
+                new ChartItem(
+                    prj.prjId,
+                    ChartItemType.PROJECT,
+                    prj.name,
+                    prj.startDate,
+                    prj.endDate,
+                    [],
+                    prj.view.color
+                )
+            )
 
             const taskResponse = await axios.get(`http://localhost:8080/api/projects/${prj.prjId}/tasks`)
             if(taskResponse.status !== 200){
@@ -29,8 +41,17 @@ async function LoadChartData() {
             }
 
             for (let task of taskResponse.data){
-                task.type = 'TASK'
-                result.push(task)
+               result.push(
+                new ChartItem(
+                    task.taskId,
+                    ChartItemType.TASK,
+                    task.name,
+                    task.startDate,
+                    task.endDate,
+                    task.prjId,
+                    prj.view.color,
+                )
+            )
             }
         }
 
@@ -43,7 +64,7 @@ async function LoadChartData() {
 }
 
 onMounted(() => {
-    //LoadChartData()
+    LoadChartData()
 })
 
 </script>

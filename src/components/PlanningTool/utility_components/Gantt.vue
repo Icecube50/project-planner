@@ -1,7 +1,6 @@
 <template>
     <div class="chart-area" ref="ganttArea">
-        <!-- <div ref="ganttContainer"></div> -->
-         <p>{{ chartData }}</p>
+        <div ref="ganttContainer"></div>
     </div>
 </template>
 
@@ -10,30 +9,34 @@ import GanttChart from 'gantt-planner'
 import { onMounted, ref, watch } from 'vue';
 
 const props = defineProps({
-    chart: {
-        type: Object,
+    modelValue: {
+        type: Array,
         required: true
     }
 })
 
-//const emit = defineEmits(['update:chart'])
+const emit = defineEmits(['update:modelValue'])
 
 const ganttArea = ref(null)
 const ganttContainer = ref(null)
 const chartData = ref([])
+let instance = null
 
-watch(() => props.chart, (newVal) => {
+watch(() => props.modelValue, (newVal) => {
     chartData.value = newVal
-    console.log("updated")
+    renderChart(chartData.value)
 })
 
 function renderChart(tasks){
     if(!tasks)
         tasks = []
 
-    console.log(`render chart with ${tasks}`)
+    if(ganttContainer.value){
+        ganttContainer.value.innerHTML = ''
+    }
+
     const height = ganttArea.value?.offsetHeight || 400
-    new GanttChart(ganttContainer.value, tasks, {
+    instance = new GanttChart(ganttContainer.value, tasks, {
         view_mode: 'Day',
         date_format: 'DD-MM-YYYY',
         scroll_to: 'today',
@@ -42,12 +45,10 @@ function renderChart(tasks){
 }
 
 onMounted(() => {
-    // const observer = new ResizeObserver(() => {
-    //     renderChart(model.value)
-    // })
-    // observer.observe(ganttArea.value)
-
-    //chart.value = []
+    const observer = new ResizeObserver(() => {
+        renderChart(chartData.value)
+    })
+    observer.observe(ganttArea.value)
 })
 
 
@@ -56,7 +57,5 @@ onMounted(() => {
 <style scoped>
 .chart-area{
     height: 100%;
-    width: 100%;
-    color:aqua;
 }
 </style>

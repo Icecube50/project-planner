@@ -100,6 +100,6 @@ onMounted(() => {
 
 <style scoped>
 .data-table-container {
-    height: 80vh;
+    height: 100%;
 }
 </style>
