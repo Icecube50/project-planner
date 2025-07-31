@@ -1,3 +1,4 @@
+import Layout from '@/components/PlanningTool/pages/Layout.vue'
 import Project_chart from '@/components/Project_Chart.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -9,6 +10,11 @@ const router = createRouter({
       name: 'Project',
       component: Project_chart,
     },
+    {
+      path: '/Planning',
+      name: 'Planning',
+      component: Layout,
+    }
   ],
 })
 
