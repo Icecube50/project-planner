@@ -1,5 +1,5 @@
 import Layout from '@/components/PlanningTool/pages/Layout.vue'
-import Project_chart from '@/components/Project_Chart.vue'
+import Login from '@/components/PlanningTool/pages/Login.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -7,9 +7,9 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'Project',
-      component: Project_chart,
-    },
+      name: 'Login',
+      component: Login,
+    }
     {
       path: '/Planning',
       name: 'Planning',

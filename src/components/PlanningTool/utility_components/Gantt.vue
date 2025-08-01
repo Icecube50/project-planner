@@ -40,8 +40,13 @@ function renderChart(tasks){
         view_mode: 'Day',
         date_format: 'DD-MM-YYYY',
         scroll_to: 'today',
-        container_height: `${height}`
+        container_height: `${height}`,
+        on_date_change: onDateChange,
     })
+}
+
+function onDateChange(args){
+
 }
 
 onMounted(() => {
