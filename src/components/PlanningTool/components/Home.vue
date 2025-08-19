@@ -25,12 +25,14 @@
 import { onMounted, reactive, ref } from 'vue'
 import axios from 'axios'
 
+
 const loading = ref(true)
 const container = ref(null)
 
 const groupByProject = ref([{key: 'prjId', order: 'asc'}, {key: 'type', order: 'asc'}])
 const sortByDate = ref ([{key: 'startDate', order: 'asc'}])
 
+const apiUrl = import.meta.env.VITE_API_URL
 const headers = [
     {
         title: 'ID',
@@ -53,7 +55,7 @@ const tableHeight = ref(400)
 
 async function LoadHomeData() {
     try{
-        const response = await axios.get('http://localhost:8080/api/projects')
+        const response = await axios.get(`${apiUrl}/api/projects`)
         if(response.status !== 200){
             Object.assign(items, [])
             return;
@@ -64,7 +66,7 @@ async function LoadHomeData() {
             prj.type = 'PROJECT'
             result.push(prj)
 
-            const taskResponse = await axios.get(`http://localhost:8080/api/projects/${prj.prjId}/tasks`)
+            const taskResponse = await axios.get(`${apiUrl}/api/projects/${prj.prjId}/tasks`)
             if(taskResponse.status !== 200){
                 Object.assign(items, [])
                 return

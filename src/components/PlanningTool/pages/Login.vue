@@ -55,11 +55,13 @@ const password = ref(null)
 const loading = ref(false)
 const show = ref(false)
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 function onSubmit () {
     if (!form.value) return
     loading.value = true
     
-    axios.post('http://localhost:8080/api/login', {
+    axios.post(`${apiUrl}/api/login`, {
         user: userName.value,
         password: password.value
     })
@@ -67,7 +69,7 @@ function onSubmit () {
         if(response.status !== 200)
             return
 
-        router.push('/planning')
+        router.push('/Planning')
     })
     .catch((error) => {
         console.log(error);

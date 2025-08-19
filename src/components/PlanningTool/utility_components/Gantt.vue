@@ -42,6 +42,7 @@ function renderChart(tasks){
         scroll_to: 'today',
         container_height: `${height}`,
         on_date_change: onDateChange,
+        bar_height: 15,
     })
 }
 

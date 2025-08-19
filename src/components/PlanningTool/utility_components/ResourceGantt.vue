@@ -37,8 +37,15 @@ const chartData = ref([])
 let instance = null
 
 watch(() => props.modelValue, (newVal) => {
-    chartData.value = newVal.chart
-    rowHeaderItems.value = newVal.keys
+
+    const names = newVal.keys
+    const chart = []
+
+    for(let it of newVal.chart)
+        chart.push(it.value)
+
+    rowHeaderItems.value = names
+    chartData.value = chart
     renderChart(chartData.value)
 })
 
@@ -55,7 +62,8 @@ function renderChart(tasks){
         view_mode: 'Day',
         date_format: 'DD-MM-YYYY',
         scroll_to: 'today',
-        container_height: `${height}`
+        container_height: `${height}`,
+        bar_height: 15,
     })
 
     createRowHeaders()
@@ -88,9 +96,13 @@ function createRowHeaders(){
         if(index < rowHeaderItems.value.length){
             let it = rowHeaderItems.value[index]
             let text = document.createElement('p')
-            text.appendChild(document.createTextNode(it))
+            text.appendChild(document.createTextNode(it.name))
             text.style.padding = `${instance.options.padding / 2}px`
             text.style.textAlign = 'center'
+
+            if(it.overCapacity)
+                text.style.color = 'red'
+
             row.appendChild(text)
         }
 

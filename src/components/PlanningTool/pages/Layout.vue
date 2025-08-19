@@ -1,21 +1,29 @@
 <template>
     <div class="layout-container" ref="layout">
-        <v-tabs
-        v-model="tab"
-        bg-color="primary">
-            <v-tab value="home">
-                Home
-            </v-tab>
-            <v-tab value="project-chart">
-                Project Chart
-            </v-tab>
-            <v-tab value="employee-chart">
-                Employee Chart
-            </v-tab>
-            <v-tab value="team-chart">
-                Team Chart
-            </v-tab>
-        </v-tabs>
+        <v-toolbar density="compact" title="Planning" color="primary">
+            <template v-slot:prepend>
+                <v-img src="favicon.ico" aspect-ratio="16/9" cover :width="24" style="margin-left: 16px;">
+                </v-img>
+            </template>
+
+            <v-tabs v-model="tab" bg-color="primary" style="margin-right: 16px;">
+                <v-tab value="home">
+                    Home
+                </v-tab>
+                <v-tab value="project-chart">
+                    Project Chart
+                </v-tab>
+                <v-tab value="employee-chart">
+                    Employee Chart
+                </v-tab>
+                <v-tab value="team-chart">
+                    Team Chart
+                </v-tab>
+            </v-tabs>
+
+            <v-btn :icon="!loggedIn ? 'mdi-login' : 'mid-account'" @click="onAccountClick"></v-btn>
+        </v-toolbar>
+
 
         <v-tabs-window v-model="tab" ref="tabWindow">
             <v-tabs-window-item value="home">
@@ -39,29 +47,36 @@ import { onMounted, ref } from 'vue';
 import Home from '../components/Home.vue';
 import ProjectChart from '../components/ProjectChart.vue';
 import EmployeeChart from '../components/EmployeeChart.vue';
+import router from '@/router';
 
 const tab = ref('home')
 const layout = ref(null)
 const tabWindow = ref(null)
+const loggedIn = ref(false)
 
-function tabContentFillRemainingSpace(){
-   if(!layout.value)
-            return
+function onAccountClick() {
+    if (loggedIn && !loggedIn.value)
+        router.push('/Login')
+}
 
-        const totalHeight = layout.value.offsetHeight
-        const tabHeaderHeight = 48; // get from css? --tab-height
-        const itemHeight = totalHeight - tabHeaderHeight
+function tabContentFillRemainingSpace() {
+    if (!layout.value)
+        return
 
-        const window = layout.value.getElementsByClassName('v-tabs-window')
-        const items = layout.value.getElementsByClassName('v-tabs-window-item')
+    const totalHeight = layout.value.offsetHeight
+    const tabHeaderHeight = 48; // get from css? --tab-height
+    const itemHeight = totalHeight - tabHeaderHeight
 
-        for(let it of window){
-            it.style.height = `${itemHeight}px`
-        }
+    const window = layout.value.getElementsByClassName('v-tabs-window')
+    const items = layout.value.getElementsByClassName('v-tabs-window-item')
 
-        for(let it of items){
-            it.style.height = `${itemHeight}px`
-        }
+    for (let it of window) {
+        it.style.height = `${itemHeight}px`
+    }
+
+    for (let it of items) {
+        it.style.height = `${itemHeight}px`
+    }
 }
 
 onMounted(() => {
@@ -77,6 +92,4 @@ onMounted(() => {
     overflow: hidden;
     background-color: #fff;
 }
-
-
 </style>
