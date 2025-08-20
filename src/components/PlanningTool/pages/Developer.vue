@@ -66,6 +66,9 @@ function onProjectsChange(event) {
     reader.onload = (e) => {
         try {
             const content = JSON.parse(e.target.result);
+            for (var user of content){
+                user.password = bcrypt.hashSync(user.password, 8)
+            }
             Upload("projects", content)
            
         } catch (err) {
