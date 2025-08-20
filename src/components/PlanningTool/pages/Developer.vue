@@ -9,6 +9,7 @@
         <v-file-input label="Assignments" @change="onAssignmentsChange"></v-file-input>
         <v-file-input label="Employees" @change="onEmployeesChange"></v-file-input>
         <v-file-input label="Teams" @change="onTeamsChange"></v-file-input>
+        <v-file-input label="Vacations" @change="onVacationsChange"></v-file-input>
 
         <v-btn text="Get" @click="onRequest" style="margin-left: 40px;"/>
     </div>
@@ -187,6 +188,30 @@ function onTeamsChange(event) {
         try {
             const content = JSON.parse(e.target.result);
             Upload("teams", content)
+           
+        } catch (err) {
+            console.log(err)
+        }
+    };
+
+    reader.readAsText(file);
+}
+
+function onVacationsChange(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (file.type !== "application/json") {
+        error.value = "Please select a valid JSON file.";
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+        try {
+            const content = JSON.parse(e.target.result);
+            Upload("vacations", content)
            
         } catch (err) {
             console.log(err)
