@@ -2,6 +2,7 @@ import Layout from '@/components/PlanningTool/pages/Layout.vue'
 import Login from '@/components/PlanningTool/pages/Login.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { AuthStore } from '@/store/auth_store'
+import Developer from '@/components/PlanningTool/pages/Developer.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,6 +23,11 @@ const router = createRouter({
       name: 'Planning',
       component: Layout,
       meta: { protected: true}
+    },
+    {
+      path: '/Developer',
+      name: 'Developer',
+      component: Developer,
     },
   ],
 })
