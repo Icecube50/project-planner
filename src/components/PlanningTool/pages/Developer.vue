@@ -9,11 +9,23 @@
         <v-file-input label="Assignments" @change="onAssignmentsChange"></v-file-input>
         <v-file-input label="Employees" @change="onEmployeesChange"></v-file-input>
         <v-file-input label="Teams" @change="onTeamsChange"></v-file-input>
+
+        <v-btn text="Get" @click="onRequest" style="margin-left: 40px;"/>
     </div>
 </template>
 
 <script setup>
 import api from '@/api/api';
+
+async function onRequest(){
+    const response = await api.get("/api/dev")
+    if(response.status === 200){
+        console.log(response.data)
+    }
+    else{
+        console.log(response)
+    }
+}
 
 // handle file selection
 function onUsersChange(event) {
