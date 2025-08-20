@@ -45,7 +45,7 @@ function onUsersChange(event) {
             Upload("users", content)
            
         } catch (err) {
-            error.value = "Invalid JSON format.";
+            console.log(err)
         }
     };
 
@@ -66,13 +66,10 @@ function onProjectsChange(event) {
     reader.onload = (e) => {
         try {
             const content = JSON.parse(e.target.result);
-            for (var user of content){
-                user.password = bcrypt.hashSync(user.password, 8)
-            }
             Upload("projects", content)
            
         } catch (err) {
-            error.value = "Invalid JSON format.";
+            console.log(err)
         }
     };
 
@@ -96,7 +93,7 @@ function onMilestonesChange(event) {
             Upload("milestones", content)
            
         } catch (err) {
-            error.value = "Invalid JSON format.";
+            console.log(err)
         }
     };
 
@@ -120,7 +117,7 @@ function onTasksChange(event) {
             Upload("tasks", content)
            
         } catch (err) {
-            error.value = "Invalid JSON format.";
+            console.log(err)
         }
     };
 
@@ -144,7 +141,7 @@ function onAssignmentsChange(event) {
             Upload("assignments", content)
            
         } catch (err) {
-            error.value = "Invalid JSON format.";
+            console.log(err)
         }
     };
 
@@ -168,7 +165,7 @@ function onEmployeesChange(event) {
             Upload("employees", content)
            
         } catch (err) {
-            error.value = "Invalid JSON format.";
+            console.log(err)
         }
     };
 
@@ -192,7 +189,7 @@ function onTeamsChange(event) {
             Upload("teams", content)
            
         } catch (err) {
-            error.value = "Invalid JSON format.";
+            console.log(err)
         }
     };
 
