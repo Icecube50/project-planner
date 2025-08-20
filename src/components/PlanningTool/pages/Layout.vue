@@ -21,7 +21,8 @@
                 </v-tab>
             </v-tabs>
 
-            <v-btn :icon="!loggedIn ? 'mdi-login' : 'mid-account'" @click="onAccountClick"></v-btn>
+            <v-btn v-if="loggedIn" icon="mdi-logout" @click="onLogoutClick"></v-btn>
+            <v-btn :icon="!loggedIn ? 'mdi-login' : 'mdi-account'" @click="onAccountClick"></v-btn>
         </v-toolbar>
 
 
@@ -36,7 +37,7 @@
                 <EmployeeChart></EmployeeChart>
             </v-tabs-window-item>
             <v-tabs-window-item value="team-chart">
-                Team Chart
+                <TeamChart></TeamChart>
             </v-tabs-window-item>
         </v-tabs-window>
     </div>
@@ -48,15 +49,25 @@ import Home from '../components/Home.vue';
 import ProjectChart from '../components/ProjectChart.vue';
 import EmployeeChart from '../components/EmployeeChart.vue';
 import router from '@/router';
+import { AuthStore } from '@/store/auth_store';
+import TeamChart from '../components/TeamChart.vue';
 
 const tab = ref('home')
 const layout = ref(null)
 const tabWindow = ref(null)
 const loggedIn = ref(false)
+const auth = AuthStore()
+
+function onLogoutClick(){
+    auth.logout()
+    router.push('/Login')
+}
 
 function onAccountClick() {
-    if (loggedIn && !loggedIn.value)
+    if (!auth.isLoggedIn())
         router.push('/Login')
+    else
+        router.push('/Account')
 }
 
 function tabContentFillRemainingSpace() {
@@ -82,6 +93,8 @@ function tabContentFillRemainingSpace() {
 onMounted(() => {
     const observer = new ResizeObserver(() => tabContentFillRemainingSpace())
     observer.observe(layout.value)
+
+    loggedIn.value = auth.isLoggedIn()
 })
 </script>
 

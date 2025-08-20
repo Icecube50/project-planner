@@ -3,14 +3,25 @@
         <v-data-table
         :items="items"
         :headers="headers"
-        :group-by="groupByProject"
-        :sort-by="sortByDate"
+        :sort-by="sortByName"
+        :group-by="groupByTeam"
         density="compact"
         hide-default-footer
         fixed-header
         :height="tableHeight"
         items-per-page="-1"
         v-if="!loading">
+
+            <template v-slot:item.roles="{ value }">
+                <v-chip
+                v-for="role in value"
+                :border="`${getColor(role)} thin opacity-25`"
+                :color="getColor(role)"
+                :text="role"
+                size="x-small"
+                ></v-chip>
+            </template>
+
         </v-data-table>
         <div class="text-center" v-else>
             <v-progress-circular
@@ -23,31 +34,18 @@
 
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
-import axios from 'axios'
-
+import api from '@/api/api';
 
 const loading = ref(true)
 const container = ref(null)
 
-const groupByProject = ref([{key: 'prjId', order: 'asc'}, {key: 'type', order: 'asc'}])
-const sortByDate = ref ([{key: 'startDate', order: 'asc'}])
+const sortByName = ref ([{key: 'name', order: 'asc'}])
+const groupByTeam = ref ([{key: 'team_id', order: 'asc'}])
 
-const apiUrl = import.meta.env.VITE_API_URL
 const headers = [
-    {
-        title: 'ID',
-        key: 'id',
-        value: item => {
-            if(item.type === 'PROJECT')
-                return item.prjId
-            return item.taskId
-        }
-    },
     { title: 'Name', key: 'name'},
-    { title: 'Start', key: 'startDate'},
-    { title: 'End', key: 'endDate'},
-    { title: 'Completed Hours', key: "hoursCompleted"},
-    { title: 'Estimated Hours', key: 'hoursEstimated'}
+    { title: 'Team', key: 'team_id'},
+    { title: 'Roles', key: 'roles'},
 ]
 
 const items = reactive([])
@@ -55,30 +53,13 @@ const tableHeight = ref(400)
 
 async function LoadHomeData() {
     try{
-        const response = await axios.get(`${apiUrl}/api/projects`)
+        const response = await api.get(`/api/employees`)
         if(response.status !== 200){
             Object.assign(items, [])
             return;
         }
 
-        const result = []
-        for (let prj of response.data){
-            prj.type = 'PROJECT'
-            result.push(prj)
-
-            const taskResponse = await axios.get(`${apiUrl}/api/projects/${prj.prjId}/tasks`)
-            if(taskResponse.status !== 200){
-                Object.assign(items, [])
-                return
-            }
-
-            for (let task of taskResponse.data){
-                task.type = 'TASK'
-                result.push(task)
-            }
-        }
-
-        Object.assign(items, result)
+        Object.assign(items, response.data)
     }
     catch(error){
         console.log(error)
@@ -87,6 +68,10 @@ async function LoadHomeData() {
     finally{
         loading.value = false
     }
+}
+
+function getColor (calories) {
+    return 'green'
 }
 
 onMounted(() => {

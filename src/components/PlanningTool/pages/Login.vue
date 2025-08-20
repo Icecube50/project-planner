@@ -48,6 +48,7 @@
 import axios from 'axios'
 import { ref } from 'vue'
 import router from '@/router'
+import { AuthStore } from '@/store/auth_store'
 
 const form = ref(false)
 const userName = ref(null)
@@ -69,6 +70,9 @@ function onSubmit () {
         if(response.status !== 200)
             return
 
+        const authStore = AuthStore()
+        authStore.setToken(response.data.token)
+        authStore.setUser(userName.value)
         router.push('/Planning')
     })
     .catch((error) => {
