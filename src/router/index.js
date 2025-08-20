@@ -25,7 +25,7 @@ const router = createRouter({
       meta: { protected: true}
     },
     {
-      path: '/Developer',
+      path: '/Dev',
       name: 'Developer',
       component: Developer,
     },
