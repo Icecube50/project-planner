@@ -36,14 +36,14 @@ async function LoadEmployeeAssignments() {
                         value: new ChartItem(
                             employee.employee_id,
                             ChartItemType.RESOURCE,
-                            it.prj.project_id,
+                            it.task,
                             it.from,
                             it.to,
                             [],
                             it.prj.view.color,
                         )
                     })
-
+    
                 if (!keys.has(employee.employee_id))
                     keys.set(employee.employee_id, employee.name)
 
@@ -54,7 +54,7 @@ async function LoadEmployeeAssignments() {
                     workload.set(employee.employee_id, new Map())
 
                 const work = workload.get(employee.employee_id)
-                for (var day = startDay; day <= endDay; day.setDate(day.getDate() + 1)) {
+                for (var day = startDay; day < endDay; day.setDate(day.getDate() + 1)) {
                     // ignore weekend
                     if (day.getDay() === 0 || day.getDay() === 6)
                         continue

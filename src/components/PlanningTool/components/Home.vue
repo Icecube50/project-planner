@@ -85,8 +85,6 @@ async function LoadHomeData() {
             else{
                 employee.status = 1
             }
-
-            console.log(`${employee.employee_id}: ${employee.status}`)
         }
 
         Object.assign(items, response.data)
