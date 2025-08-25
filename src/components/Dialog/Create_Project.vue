@@ -8,8 +8,12 @@
                             :rules="requiredRules"></v-text-field>
                     </v-col>
                     <v-col>
-                        <v-text-field label="Project id*" v-model="project_id" required
-                            :rules="requiredRules"></v-text-field>
+                        <v-text-field class="mb-2" label="Color*" v-model="project_color" readonly
+                            :rules="requiredRules">
+                            <v-dialog v-model="color_dialog" activator="parent" width="auto">
+                                <v-color-picker v-model="project_color" mode="hex"></v-color-picker>
+                            </v-dialog>
+                        </v-text-field>
                     </v-col>
                 </v-row>
                 <v-row dense>
@@ -60,9 +64,10 @@ const emit = defineEmits(['exit'])
 
 const start_date_dialog = ref(false)
 const end_date_dialog = ref(false)
+const color_dialog = ref(false)
 
+const project_color = ref(null)
 const project_name = ref(null)
-const project_id = ref(null)
 const project_description = ref('')
 const project_start = ref(null)
 const project_end = ref(null)
@@ -108,17 +113,27 @@ function onAbort() {
     emit('exit', null)
 }
 
+function getDateString(date){
+    try{
+        return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+    }
+    catch{
+
+    }
+}
+
 async function onSave(submitEventPromise) {
     const {valid, errors} = await submitEventPromise
     if(!valid) return
 
     let project = {
-        project_name: project_name.value,
-        project_id: project_id.value,
-        project_description: project_description?.value,
-        project_start_date: project_start.value,
-        project_end_date: project_end.value,
-        project_hours_estimated: project_hours.value,
+        name: project_name.value,
+        description: project_description.value,
+        startDate: getDateString(project_start.value),
+        endDate: getDateString(project_end.value),
+        view: {
+            color: project_color.value
+        }
     }
 
     emit('exit', project)
