@@ -12,6 +12,7 @@
           class="mb-2"
           label="User"
           clearable
+          id="username"
         ></v-text-field>
 
         <v-text-field
@@ -24,6 +25,7 @@
             name="input-10-2"
             @click:append="show = !show"
             v-model="password"
+            id="password"
           ></v-text-field>
 
         <br>
@@ -45,7 +47,7 @@
 </template>
 
 <script setup>
-import axios from 'axios'
+import api from '@/api/api'
 import { ref } from 'vue'
 import router from '@/router'
 import { AuthStore } from '@/store/auth_store'
@@ -56,23 +58,20 @@ const password = ref(null)
 const loading = ref(false)
 const show = ref(false)
 
-const apiUrl = import.meta.env.VITE_API_URL
-
 function onSubmit () {
     if (!form.value) return
     loading.value = true
     
-    axios.post(`${apiUrl}/api/login`, {
+    api.post(`/api/login`, {
         user: userName.value,
         password: password.value
-    })
+    }, { skipAuth: true })
     .then((response) => {
         if(response.status !== 200)
             return
 
         const authStore = AuthStore()
-        authStore.setToken(response.data.token)
-        authStore.setUser(userName.value)
+        authStore.login(response.data.user, response.data.token)
         router.push('/Planning')
     })
     .catch((error) => {

@@ -10,11 +10,8 @@
                 <v-tab value="home">
                     Home
                 </v-tab>
-                <v-tab value="project-chart">
-                    Project Chart
-                </v-tab>
-                <v-tab value="employee-chart">
-                    Employee Chart
+                <v-tab value="personal-chart">
+                    Personal Chart
                 </v-tab>
                 <v-tab value="team-chart">
                     Team Chart
@@ -30,11 +27,8 @@
             <v-tabs-window-item value="home">
                 <Home></Home>
             </v-tabs-window-item>
-            <v-tabs-window-item value="project-chart">
-                <ProjectChart></ProjectChart>
-            </v-tabs-window-item>
-            <v-tabs-window-item value="employee-chart">
-                <EmployeeChart></EmployeeChart>
+            <v-tabs-window-item value="personal-chart">
+                <PersonalChart></PersonalChart>
             </v-tabs-window-item>
             <v-tabs-window-item value="team-chart">
                 <TeamChart></TeamChart>
@@ -46,11 +40,10 @@
 <script setup lang="ts">7
 import { onMounted, ref } from 'vue';
 import Home from '../components/Home.vue';
-import ProjectChart from '../components/ProjectChart.vue';
-import EmployeeChart from '../components/EmployeeChart.vue';
 import router from '@/router';
 import { AuthStore } from '@/store/auth_store';
 import TeamChart from '../components/TeamChart.vue';
+import PersonalChart from '../components/PersonalChart.vue';
 
 const tab = ref('home')
 const layout = ref(null)

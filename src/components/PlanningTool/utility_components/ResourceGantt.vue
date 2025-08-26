@@ -69,6 +69,8 @@ function renderChart(tasks){
         container_height: `${height}`,
         bar_height: 15,
         readonly: true,
+        //ignore: ['weekend'],
+        view_mode_select: true,
     })
 
     createRowHeaders()

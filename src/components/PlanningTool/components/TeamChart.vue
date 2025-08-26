@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import api from '@/api/api';
 import { ChartItem, ChartItemType } from 'gantt-planner';
 import ResourceGantt from '../utility_components/ResourceGantt.vue';
