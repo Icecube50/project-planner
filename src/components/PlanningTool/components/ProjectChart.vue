@@ -20,7 +20,8 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { Utils } from '@/util/date_utils';
 import Gantt from '../utility_components/Gantt.vue';
 import api from '@/api/api';
 import { ChartItem, ChartItemType } from 'gantt-planner';
@@ -30,51 +31,28 @@ const chartData = ref([])
 const createDialog = ref(false)
 
 async function LoadChartData() {
-    chartData.value = []
     try{
-        const response = await api.get(`/api/projects`)
+        const today = Utils.to_string(Utils.today())
+        const response = await api.get(`/api/projects/${today}`)
         if(response.status !== 200){
             chartData.value = []
             return;
         }
 
-        const result = []
-        for (let prj of response.data){
-            
-            result.push(
-                new ChartItem(
-                    prj.project_id,
-                    ChartItemType.PROJECT,
-                    prj.name,
-                    prj.startDate,
-                    prj.endDate,
-                    [],
-                    prj.view.color
-                )
-            )
-
-            const milestoneResponse = await api.get(`/api/projects/${prj.project_id}/milestones`)
-            if(milestoneResponse.status !== 200){
-                chartData.value = []
-                return
-            }
-
-            for (let milestone of milestoneResponse.data){
-               result.push(
-                    new ChartItem(
-                        milestone.milestone_id,
-                        ChartItemType.MILESTONE,
-                        milestone.milestone_id,
-                        milestone.startDate,
-                        milestone.endDate,
-                        milestone.project_id,
-                        prj.view.color,
-                    )
-                )
-            }
+        const chartItems = []
+        const query = response.data
+        for(var row of query){
+            chartItems.push(new ChartItem(
+                row.project_name,
+                ChartItemType.RESOURCE,
+                row.sprint_name,
+                row.sprint_start_date,
+                row.sprint_end_date
+            ))
         }
 
-        chartData.value = result
+        chartData.value = chartItems
+
     }
     catch(error){
         console.log(error)

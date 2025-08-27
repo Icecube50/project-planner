@@ -43,6 +43,7 @@ function renderChart(tasks){
         container_height: `${height}`,
         on_date_change: onDateChange,
         bar_height: 15,
+        view_mode_select: true,
     })
 }
 

@@ -10,6 +10,9 @@
                 <v-tab value="home">
                     Home
                 </v-tab>
+                <v-tab value="project-chart">
+                    Projects
+                </v-tab>
                 <v-tab value="personal-chart">
                     Personal Chart
                 </v-tab>
@@ -26,6 +29,9 @@
         <v-tabs-window v-model="tab" ref="tabWindow">
             <v-tabs-window-item value="home">
                 <Home></Home>
+            </v-tabs-window-item>
+             <v-tabs-window-item value="project-chart">
+                <ProjectChart></ProjectChart>
             </v-tabs-window-item>
             <v-tabs-window-item value="personal-chart">
                 <PersonalChart></PersonalChart>
@@ -44,6 +50,7 @@ import router from '@/router';
 import { AuthStore } from '@/store/auth_store';
 import TeamChart from '../components/TeamChart.vue';
 import PersonalChart from '../components/PersonalChart.vue';
+import ProjectChart from '../components/ProjectChart.vue';
 
 const tab = ref('home')
 const layout = ref(null)

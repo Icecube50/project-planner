@@ -132,6 +132,16 @@ function createRowHeaders(){
                 container.appendChild(text)
                 container.appendChild(role)
             }
+            else if(it.name){
+                 let text = document.createElement('p')
+                text.appendChild(document.createTextNode(it.name))
+                text.style.textAlign = 'center'
+                text.style.width = '100%%'
+                text.style.height = '100%'
+                text.style.verticalAlign = 'middle'
+
+                container.appendChild(text)
+            }
             else{
                 let text = document.createElement('p')
                 text.appendChild(document.createTextNode(it))

@@ -32,6 +32,7 @@ api.interceptors.response.use(
       try {
         await authStore.refreshToken();
         error.config.headers.Authorization = `Bearer ${authStore.token}`;
+        error.config.skipAuth = false;
         return api.request(error.config); // retry original request
       } 
       catch (refreshError) {
