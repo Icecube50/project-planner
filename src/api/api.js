@@ -52,8 +52,6 @@ api.interceptors.response.use(
     }
 
     // Original request failed but due to non credential related error -> probably need different error handling here, for now treat as bad credentials
-    authStore.logout();
-    router.push('/Login')
     return Promise.reject(error);
   }
 );

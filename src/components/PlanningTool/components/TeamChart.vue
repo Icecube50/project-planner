@@ -1,5 +1,5 @@
 <template>
-    <ResourceGantt v-model="chartData"></ResourceGantt>
+    <ResourceGantt :model="chartData" viewMode="Day"></ResourceGantt>
 </template>
 
 <script setup>
