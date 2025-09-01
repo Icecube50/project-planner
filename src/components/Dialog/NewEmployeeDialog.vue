@@ -17,8 +17,8 @@
                 </v-row>
                 <v-row dense>
                     <v-col>
-                        <v-autocomplete :items="roles" label="Roles*" required :rules="validRoleRules" auto-select-first v-model="employee_role">
-                        </v-autocomplete>
+                        <v-select multiple :items="roles" label="Roles*" required :rules="validRoleRules" read auto-select-first v-model="employee_role">
+                        </v-select>
                     </v-col>
                 </v-row>
 
@@ -38,7 +38,7 @@
 
 <script setup>
 import { onMounted, reactive, ref } from 'vue';
-import { store } from '@/store/store';
+import { Config } from '@/util/app_config';
 
 const emit = defineEmits(['exit'])
 
@@ -50,7 +50,7 @@ const employee_id = ref(null)
 const employee_role = ref(null)
 
 onMounted(() => {
-    Object.assign(roles, store.db.GetAvailableEmployeeRoles())
+    Object.assign(roles, Config.getEmployeeRoles())
 })
 
 const requiredRules = [
@@ -72,11 +72,6 @@ const validRoleRules = [
     value => {
         if (/^\s*$/.test(value)) return 'field cannot be empty'
         return true
-    },
-    value => {
-        console.log(roles.values)
-        if(roles.includes(value)) return true
-        return 'invalid role'
     }
 ]
 

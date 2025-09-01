@@ -7,105 +7,39 @@ import { onMounted, ref } from 'vue';
 import api from '@/api/api';
 import { ChartItem, ChartItemType } from 'gantt-planner';
 import ResourceGantt from '../utility_components/ResourceGantt.vue';
+import { Utils } from '@/util/date_utils';
+import { Config } from '@/util/app_config';
 
 const chartData = ref({ keys: [], chart: [] })
 
 async function LoadChartData() {
-    // not logged in -> return to login
-
-    // no team lead -> show personal/assigned tasks
-
-    // team lead -> load all team projects -> load assigned employees
-
-
     try{
-        const response = await api.get(`/api/projects`)
+        const today = Utils.to_string(Utils.today())
+        const response = await api.get(`/api/projects/${today}`)
         if(response.status !== 200){
-            chartData.value = { keys: [], chart: [] }
+            chartData.value = { keys: [], chart: []}
             return;
         }
 
-        const projects = []
-        const projectKeys = new Map()
-        var assignments = []
-        const employees = new Map()
-        for (let prj of response.data){
+        const chartItems = []
+        const chartKeys = new Map()
+        const query = response.data
+        for(var row of query){
+            chartItems.push(new ChartItem(
+                row.project_name,
+                ChartItemType.RESOURCE,
+                row.sprint_name,
+                row.sprint_start_date,
+                row.sprint_end_date,
+                [],
+                'blue' //Config.getSprintColor(row.sprint_name)
+            ))
             
-            projects.push(
-                new ChartItem(
-                    prj.project_id,
-                    ChartItemType.PROJECT,
-                    `${prj.name} - Engineering`,
-                    prj.engineering.startDate,
-                    prj.engineering.endDate,
-                    [],
-                    prj.view.color
-                )
-            )
-
-            projects.push(
-                new ChartItem(
-                    prj.project_id,
-                    ChartItemType.PROJECT,
-                    `${prj.name} - On Site`,
-                    prj.startupOnSite.startDate,
-                    prj.startupOnSite.endDate,
-                    [],
-                    'blue'
-                )
-            )
-
-            projects.push(
-                new ChartItem(
-                    prj.project_id,
-                    ChartItemType.PROJECT,
-                    `${prj.name} - Off Site`,
-                    prj.startupOffSite.startDate,
-                    prj.startupOffSite.endDate,
-                    [],
-                    'red'
-                )
-            )
-
-            if(!projectKeys.has(prj.project_id))
-                projectKeys.set(prj.project_id, prj)
-
-            const assignment = await LoadAssignedEmployees(prj)
-            for(var employee of assignment.employees.values()){
-                if(!employees.has(employee.employee_id)){
-                    employees.set(employee.employee_id, employee)
-                }
-            }
-
-            assignments = assignments.concat(assignment.chart)
+            if(!chartKeys.has(row.project_name))
+                chartKeys.set(row.project_name, `${row.customer_name} | ${row.project_name}`) 
         }
 
-        // employees: sort by role -> sort by name
-        // projects: sort by name
-
-        var chartHeader = []
-        var chartItems = []
-
-        var sorted = Array.from(employees.values()).sort((a, b) => {
-            if(a.roles[0] === b.roles[0])
-                return a.name.localeCompare(b.name)
-
-            return a.roles[0].localeCompare(b.roles[0])
-        })
-
-        for(var employee of sorted){
-            chartHeader.push(employee)
-
-            var work = assignments.filter(it => it.ID === employee.employee_id)
-            chartItems = chartItems.concat(work)
-        }
-
-        const sortedProjects = projects.sort(it => it.project_id)
-        chartItems = chartItems.concat(sortedProjects)
-
-        chartHeader = chartHeader.concat(Array.from(projectKeys.keys()).sort(it => it.project_id))
-
-        chartData.value = { keys: chartHeader, chart: chartItems }
+         chartData.value = { keys: Array.from(chartKeys.values()), chart: chartItems }
     }
     catch(error){
         console.log(error)

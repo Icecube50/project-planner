@@ -6,6 +6,37 @@
                 </v-img>
             </template>
 
+            <template v-slot:extension>
+                <v-fab
+                    class="ms-4"
+                    color="secondary"
+                    location="bottom left"
+                    size="40"
+                    absolute
+                    offset
+                    icon
+                    >
+                    <v-icon>{{ showActions ? 'mdi-close' : 'mdi-cog' }}</v-icon>
+                    <v-speed-dial v-model="showActions" location="right center" transition="slide y reverse" activator="parent">
+                        <v-btn key="1" color="success" icon @click="onCreateEmployee">
+                            <v-icon size="24">mdi-account-plus</v-icon>
+                        </v-btn>
+
+                        <v-btn key="2" color="info" icon>
+                            <v-icon size="24">$info</v-icon>
+                        </v-btn>
+
+                        <v-btn key="3" color="warning" icon>
+                            <v-icon size="24">$warning</v-icon>
+                        </v-btn>
+
+                        <v-btn key="4" color="error" icon>
+                            <v-icon size="24">$error</v-icon>
+                        </v-btn>
+                    </v-speed-dial>
+                </v-fab>
+            </template>
+
             <v-tabs v-model="tab" bg-color="primary" style="margin-right: 16px;">
                 <v-tab value="home">
                     Home
@@ -41,6 +72,12 @@
             </v-tabs-window-item>
         </v-tabs-window>
     </div>
+
+    <v-dialog 
+        width="600"
+        v-model="showDialog">
+        <NewEmployeeDialog v-if="dialogType === 1"></NewEmployeeDialog>
+    </v-dialog>
 </template>
 
 <script setup lang="ts">7
@@ -51,12 +88,16 @@ import { AuthStore } from '@/store/auth_store';
 import TeamChart from '../components/TeamChart.vue';
 import PersonalChart from '../components/PersonalChart.vue';
 import ProjectChart from '../components/ProjectChart.vue';
+import NewEmployeeDialog from '@/components/Dialog/NewEmployeeDialog.vue';
 
 const tab = ref('home')
+const showActions = ref(false)
 const layout = ref(null)
 const tabWindow = ref(null)
 const loggedIn = ref(false)
 const auth = AuthStore()
+const showDialog = ref(false)
+const dialogType = ref(0)
 
 function onLogoutClick(){
     auth.logout()
@@ -88,6 +129,14 @@ function tabContentFillRemainingSpace() {
     for (let it of items) {
         it.style.height = `${itemHeight}px`
     }
+}
+
+function onCreateEmployee(){
+    if(showDialog.value)
+        return
+
+    dialogType.value = 1
+    showDialog.value = true
 }
 
 onMounted(() => {

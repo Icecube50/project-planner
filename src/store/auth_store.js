@@ -36,12 +36,10 @@ export const AuthStore = defineStore("auth", {
             }, { skipAuth: true });
 
             if (res.status === 200) {
-                console.log('refresh success')
                 this.setToken(res.data.token);
                 return
             } 
             
-            console.log('refresh failed')
             throw res
         }
     },
