@@ -27,20 +27,33 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response, async (error) => {
     const authStore = AuthStore();
+    const originalRequest = error.config
+    console.log('response interceptor')
+
+    // Refresh failed -> logout user
+    if (originalRequest.url.includes('/api/refresh')) {
+      authStore.logout();
+      router.push('/Login');
+      return Promise.reject(error);
+    }
     
+    // Any other request failed -> Try to refresh token and then retry original request
     if (error.response?.status === 401 || error.response.status === 403) {
       try {
         await authStore.refreshToken();
-        error.config.headers.Authorization = `Bearer ${authStore.token}`;
-        error.config.skipAuth = false;
-        return api.request(error.config); // retry original request
+        originalRequest.headers.Authorization = `Bearer ${authStore.token}`;
+        originalRequest.skipAuth = true;
+        return api.request(originalRequest); // retry original request
       } 
       catch (refreshError) {
-        console.log(`${refreshError}`)
         authStore.logout();
         router.push('/Login')
       }
     }
+
+    // Original request failed but due to non credential related error -> probably need different error handling here, for now treat as bad credentials
+    authStore.logout();
+    router.push('/Login')
     return Promise.reject(error);
   }
 );

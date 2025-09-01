@@ -16,14 +16,9 @@
 import GanttChart, { ChartItemType } from 'gantt-planner'
 import { createVNode, onMounted, readonly, ref, watch } from 'vue';
 
-const props = defineProps({
-    modelValue: {
-        type: Object,
-        required: true
-    }
-})
+const props = defineProps(["model", "viewMode"])
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:model'])
 
 const ganttArea = ref(null)
 const ganttContainer = ref(null)
@@ -36,8 +31,7 @@ const rowHeaderItems = ref([])
 const chartData = ref([])
 let instance = null
 
-watch(() => props.modelValue, (newVal) => {
-
+watch(() => props.model, (newVal) => {
     const employees = []
     const chart = []
 
@@ -62,16 +56,16 @@ function renderChart(tasks){
     }
 
     const height = ganttArea.value?.offsetHeight || 400
-    instance = new GanttChart(ganttContainer.value, tasks, {
-        view_mode: 'Day',
+    const options = {
+        view_mode: (props.viewMode) ? props.viewMode : 'Day',
         date_format: 'DD-MM-YYYY',
         scroll_to: 'today',
         container_height: `${height}`,
         bar_height: 15,
-        readonly: true,
-        //ignore: ['weekend'],
         view_mode_select: true,
-    })
+    }
+
+    instance = new GanttChart(ganttContainer.value, tasks, options)
 
     createRowHeaders()
     syncScroll()

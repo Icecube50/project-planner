@@ -19,12 +19,6 @@ const router = createRouter({
       component: Login,
     },
     {
-      path: '/Planning',
-      name: 'Planning',
-      component: Layout,
-      meta: { protected: true}
-    },
-    {
       path: '/Dev',
       name: 'Developer',
       component: Developer,

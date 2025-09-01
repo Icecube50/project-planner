@@ -4,6 +4,7 @@
       <v-form
         v-model="form"
         @submit.prevent="onSubmit"
+        @register.prevent="onRegister"
       >
         <v-text-field
           v-model="userName"
@@ -17,7 +18,7 @@
 
         <v-text-field
             :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-            :rules="[rules.required]"
+            :rules="[rules.required, rules.minLength]"
             :type="show ? 'text' : 'password'"
             class="input-group--focused"
             label="Password"
@@ -41,6 +42,21 @@
         >
           Sign In
         </v-btn>
+
+        <v-btn
+          v-if="allowCreateUser"
+          :disabled="!form"
+          :loading="loading"
+          @click="onRegister"
+          color="success"
+          size="large"
+          type="button"
+          variant="elevated"
+          block
+          style="margin-top: 5px;"
+        >
+          Register
+        </v-btn>
       </v-form>
     </v-card>
   </v-sheet>
@@ -48,7 +64,7 @@
 
 <script setup>
 import api from '@/api/api'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import router from '@/router'
 import { AuthStore } from '@/store/auth_store'
 
@@ -57,9 +73,11 @@ const userName = ref(null)
 const password = ref(null)
 const loading = ref(false)
 const show = ref(false)
+const allowCreateUser = ref(true)
 
-function onSubmit () {
-    if (!form.value) return
+async function onSubmit () {
+    if (!form.value || loading.value) 
+      return
     loading.value = true
     
     api.post(`/api/login`, {
@@ -72,7 +90,32 @@ function onSubmit () {
 
         const authStore = AuthStore()
         authStore.login(response.data.user, response.data.token)
-        router.push('/Planning')
+        router.push('/')
+    })
+    .catch((error) => {
+        console.log(error);
+    })
+    .finally(() => {
+        loading.value = false
+    });
+}
+
+async function onRegister(){
+    if (!form.value || loading.value) 
+      return
+    loading.value = true
+
+    api.post(`/api/register`, {
+        user: userName.value,
+        password: password.value
+    }, { skipAuth: true })
+    .then((response) => {
+        if(response.status !== 200)
+            return
+
+        const authStore = AuthStore()
+        authStore.login(response.data.user, response.data.token)
+        router.push('/')
     })
     .catch((error) => {
         console.log(error);
@@ -84,8 +127,14 @@ function onSubmit () {
 
 const rules = {
     required: value => !!value || 'Required.',
+    minLength: value => value.length >= 8 || 'Minimum 8 characters'
 }
 
+onMounted(() => {
+  const authStore = AuthStore()
+  if(authStore.isLoggedIn())
+    router.push('/')
+})
 
 </script>
 
